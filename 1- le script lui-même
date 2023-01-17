@@ -1,13 +1,15 @@
 #!/bin/bash
 # Licence : GPL v3
 # Fonction : Scanner et Reconnaître. Script pour une personne aveugle qui a des difficultés pour lancer un logiciel de scan.. 
-# Le script lui donnera le document scanné sous trois formats : pdf, jpg et txt.
+# Le script lui donnera le document scanné sous trois formats : pdf, jpg et txt. Et il lira le texte à haute voix.
 # Maintenance : aciah@laposte.net
 # Shell : bash
+
 # d'abord un petit bruit pour montrer que le script travaille
 aplay /usr/local/share/advl/beep.wav  
 # un mot enregistré sous la forme patienter.pdf
 pdftotext -layout /usr/local/share/advl/patienter.pdf - | espeak -a 150 -v mb-fr1 -s 130
+
 # on crée le dossier scan dans $HOME
 mkdir $HOME/scan
 # on scanne le document en indiquant le format 210x297 et la résolution.
@@ -23,7 +25,18 @@ pdftotext -layout /usr/local/share/advl/docfinal.pdf - | espeak -a 150 -v mb-fr1
 # on fait lire le document_final.txt  avec un autre script qui s'appelle lecture.sh que nous publierons plus tard.
 x-terminal-emulator -e /usr/bin/lecture.sh $HOME/scan/document_final.txt
 
-# et notre script n'est pas fini car on veut encore avoir le document en pdf et en jpg. Mais nous y reviendrons.
+# avec le logiciel unoconv on transforme l'image.tiff en jpg et en pdf
+unoconv -f jpg image.tiff
+unoconv -f pdf image.tiff
+
+#on supprime image.tiff
+rm $HOME/scan/image.tiff
+
+# on ouvre le dossier scan en utilisant le gestionnaire de fichiers caja.
+caja $HOME/scan
+
+
+# et notre script est toujours amendable !
 # ceci n'était qu'un essai pour utiiiser Github.
 # à suivre donc ........
 # et n'hésitez pas à nous visiter ici : https://aciah-linux.org
